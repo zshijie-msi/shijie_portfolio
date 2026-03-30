@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Music Collection — 张仕杰</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f6f4ef;--line:rgba(22,24,29,0.08);--line-strong:rgba(22,24,29,0.14);--text:#14161a;--muted:#666b76;--muted-2:#8c919d;--accent:#6b4c9a;--accent-soft:rgba(107,76,154,0.10);--shadow-lg:0 24px 80px rgba(20,22,26,0.08);--shadow-md:0 12px 40px rgba(20,22,26,0.06);--radius-xl:28px;--radius-lg:22px;--radius-md:16px;--content:1180px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Noto Sans SC',-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;background:radial-gradient(circle at 10% 10%,rgba(107,76,154,0.035),transparent 26%),radial-gradient(circle at 90% 50%,rgba(107,76,154,0.02),transparent 22%),var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  ::selection{background:var(--accent);color:white}
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+  .container{max-width:var(--content);margin:0 auto;padding:0 40px}
+  .eyebrow{display:inline-block;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent)}
+
+  .nav-wrap{position:fixed;top:16px;left:0;right:0;z-index:120;pointer-events:none}
+  .nav{pointer-events:auto;max-width:calc(var(--content) + 80px);margin:0 auto;padding:0 24px;display:flex;justify-content:center}
+  .nav-shell{width:100%;max-width:940px;display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-radius:999px;background:rgba(248,247,244,0.75);backdrop-filter:blur(18px) saturate(170%);-webkit-backdrop-filter:blur(18px) saturate(170%);border:1px solid rgba(20,22,26,0.07);box-shadow:0 10px 40px rgba(20,22,26,0.05)}
+  .brand{font-size:15px;font-weight:800;letter-spacing:-0.03em}
+  .resume-btn{padding:11px 16px;border-radius:999px;background:var(--text);color:#fff;font-size:13px;font-weight:700;transition:transform .25s ease,background .25s ease}
+  .resume-btn:hover{transform:translateY(-1px);background:var(--accent)}
+
+  .hero{padding:120px 0 60px;max-width:720px}
+  .hero-title{font-size:clamp(40px,5vw,60px);line-height:1.05;font-weight:900;letter-spacing:-0.05em;margin:16px 0 0}
+  .hero-lead{margin:24px 0 0;font-size:17px;line-height:1.9;color:var(--muted);font-weight:500}
+
+  .piece{padding:64px 0;border-top:1px solid var(--line)}
+  .piece-header{margin-bottom:20px}
+  .piece-title{font-size:clamp(24px,3vw,32px);line-height:1.1;font-weight:800;letter-spacing:-0.04em;margin-top:10px}
+  .piece-meta{font-size:14px;color:var(--muted);margin-top:8px;line-height:1.7}
+  .piece-desc{max-width:680px;font-size:15px;line-height:2;color:var(--muted);margin-top:14px}
+  .piece audio{width:100%;max-width:680px;height:48px;border-radius:12px;margin-top:20px;display:block}
+
+  /* photo + score pair: landscape left, portrait score right */
+  .piece-pair{display:grid;grid-template-columns:3fr 2fr;gap:16px;margin-top:24px;max-width:820px;align-items:start}
+  .piece-pair img{width:100%;border-radius:var(--radius-md);border:1px solid var(--line);box-shadow:var(--shadow-md)}
+  .piece-pair .pair-photo{aspect-ratio:16/9;object-fit:cover}
+  .piece-pair .pair-score{cursor:pointer;transition:transform .3s ease,box-shadow .3s ease}
+  .piece-pair .pair-score:hover{transform:translateY(-3px);box-shadow:0 16px 48px rgba(20,22,26,0.12)}
+
+  /* score carousel modal */
+  .score-modal{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.88);backdrop-filter:blur(6px);padding:40px}
+  .score-modal.active{display:flex;align-items:center;justify-content:center}
+  .score-modal-close{position:fixed;top:20px;right:24px;width:40px;height:40px;border-radius:999px;background:rgba(255,255,255,0.15);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;font-size:20px;z-index:210;transition:.2s ease}
+  .score-modal-close:hover{background:rgba(255,255,255,0.3)}
+  .carousel{position:relative;width:100%;max-width:600px;height:85vh;perspective:1000px}
+  .carousel-track{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+  .carousel-slide{position:absolute;width:85%;max-height:95%;border-radius:12px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.4);transition:transform .5s cubic-bezier(.16,1,.3,1),opacity .5s ease,box-shadow .5s ease;cursor:default}
+  .carousel-slide img{width:100%;display:block}
+  .carousel-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:999px;background:rgba(255,255,255,0.18);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;font-size:18px;transition:.2s ease;z-index:5}
+  .carousel-nav:hover{background:rgba(255,255,255,0.35)}
+  .carousel-prev{left:-60px}
+  .carousel-next{right:-60px}
+  .carousel-counter{position:absolute;bottom:-36px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,0.5);font-size:13px;font-family:'DM Sans',sans-serif}
+
+  .cta-section{padding:72px 0 88px;border-top:1px solid var(--line);text-align:center}
+  .cta-note{max-width:580px;margin:14px auto 28px;font-size:15px;line-height:1.88;color:var(--muted)}
+  .cta-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+  .btn-main{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 22px;border-radius:14px;font-size:14.5px;font-weight:700;background:var(--text);color:#fff;box-shadow:var(--shadow-md);transition:.25s cubic-bezier(.16,1,.3,1)}
+  .btn-main:hover{background:var(--accent);transform:translateY(-1px)}
+  .btn-ghost{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 22px;border-radius:14px;font-size:14.5px;font-weight:700;border:1px solid var(--line-strong);color:var(--text);background:rgba(255,255,255,0.56);transition:.25s cubic-bezier(.16,1,.3,1)}
+  .btn-ghost:hover{border-color:rgba(107,76,154,.25);color:var(--accent);transform:translateY(-1px)}
+  .footer{padding:28px 0 44px;color:var(--muted-2);font-size:12px;display:flex;justify-content:space-between;gap:18px;border-top:1px solid rgba(20,22,26,.06)}
+
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+  .reveal.visible{opacity:1;transform:translateY(0)}
+  .d1{transition-delay:.06s}.d2{transition-delay:.12s}
+
+  @media(max-width:768px){
+    .container{padding:0 20px}
+    .piece{padding:48px 0}
+    .piece-pair{grid-template-columns:1fr}
+    .nav-shell{padding:12px 14px}
+    .footer{flex-direction:column}
+  }
+</style>
+</head>
+<body>
+<div class="nav-wrap"><nav class="nav"><div class="nav-shell">
+  <a href="index.html" class="brand">张仕杰</a>
+  <div style="display:flex;gap:10px"><a href="index.html" class="resume-btn">返回首页</a></div>
+</div></nav></div>
+
+<main>
+<section class="container hero">
+  <span class="eyebrow reveal">Composition · 2021 — 2024</span>
+  <h1 class="hero-title reveal d1">Music Collection</h1>
+  <p class="hero-lead reveal d2">从萨克斯四重奏到弦乐四重奏，从小提琴独奏到铜管合奏——这些是我在杜克大学期间创作并首演的原创作品。作曲训练塑造了我对结构、节奏和"用有限素材讲完整故事"的直觉，后来直接迁移到了交互设计和产品体验的工作中。</p>
+</section>
+
+<!-- 1. Mountain Summer — 最简单的二重奏 -->
+<section class="piece">
+  <div class="container">
+    <div class="piece-header reveal">
+      <span class="eyebrow">Clarinet & Saxophone Duet</span>
+      <h2 class="piece-title">Mountain Summer</h2>
+      <div class="piece-meta">MUS 162 · Bruce Zhang · 单簧管与萨克斯二重奏</div>
+    </div>
+    <p class="piece-desc reveal d1">一首轻快的二重奏小品，灵感来自久石让的《Summer》。两件木管乐器围绕一个短小主题展开对话，试图捕捉夏日山间的明亮感。</p>
+    <audio controls preload="metadata" class="reveal d1" data-volume="1"><source src="assets/music/ms.mp3" type="audio/mpeg"></audio>
+    <div class="piece-pair reveal d2">
+      <!-- MS/11_edited.jpg → assets/music/ms-photo.jpg -->
+      <img src="assets/music/ms-photo.jpg" alt="Mountain Summer 排练" class="pair-photo">
+      <!-- MS/0.jpg → assets/music/ms-score.jpg（乐谱首页）点击展开全部乐谱 -->
+      <img src="assets/music/ms-score.jpg" alt="Mountain Summer 乐谱" class="pair-score" onclick="openScoreModal('ms')">
+    </div>
+  </div>
+</section>
+
+<!-- 2. Dazzling Daydreaming — 小提琴+钢琴 -->
+<section class="piece">
+  <div class="container">
+    <div class="piece-header reveal">
+      <span class="eyebrow">Violin & Piano</span>
+      <h2 class="piece-title">Dazzling Daydreaming</h2>
+      <div class="piece-meta">MA 221 · Shijie Zhang · 小提琴与钢琴</div>
+    </div>
+    <p class="piece-desc reveal d1">开头以反复琶音建立白日梦般的氛围，小提琴在上方自由展开旋律线。在 "Through Time with Music" 室内乐系列音乐会首演。</p>
+    <audio controls preload="metadata" class="reveal d1" data-volume="0.78"><source src="assets/music/dd.mp3" type="audio/mpeg"></audio>
+    <div class="piece-pair reveal d2">
+      <!-- DD/Through time...horizontal.jpg → assets/music/dd-poster.jpg -->
+      <img src="assets/music/dd-poster.jpg" alt="音乐会海报" class="pair-photo">
+      <!-- DD/Bruce_Dazzling Daydreaming-1.png → assets/music/dd-score.jpg -->
+      <img src="assets/music/dd-score.jpg" alt="Dazzling Daydreaming 乐谱" class="pair-score" onclick="openScoreModal('dd')">
+    </div>
+  </div>
+</section>
+
+<!-- 3. River in the Wood — 萨克斯四重奏 -->
+<section class="piece">
+  <div class="container">
+    <div class="piece-header reveal">
+      <span class="eyebrow">Saxophone Quartet</span>
+      <h2 class="piece-title">River in the Wood</h2>
+      <div class="piece-meta">MUS 162 · Bruce Zhang · 萨克斯四重奏</div>
+    </div>
+    <p class="piece-desc reveal d1">灵感来自原神音乐《女主人的叮咛》，通过模仿和对位逐渐展开一条简单的旋律线，用萨克斯特有的温暖音色描绘林间水流的流动感。</p>
+    <audio controls preload="metadata" class="reveal d1" data-volume="0.76"><source src="assets/music/riw.mp3" type="audio/mpeg"></audio>
+    <div class="piece-pair reveal d2">
+      <!-- RIW/image0_edited.jpg → assets/music/riw-photo.jpg -->
+      <img src="assets/music/riw-photo.jpg" alt="River in the Wood 排练" class="pair-photo">
+      <!-- RIW/0.jpg → assets/music/riw-score.jpg -->
+      <img src="assets/music/riw-score.jpg" alt="River in the Wood 乐谱" class="pair-score" onclick="openScoreModal('riw')">
+    </div>
+  </div>
+</section>
+
+<!-- 4. Fanfare — 铜管合奏 -->
+<section class="piece">
+  <div class="container">
+    <div class="piece-header reveal">
+      <span class="eyebrow">Brass Ensemble</span>
+      <h2 class="piece-title">Fanfare</h2>
+      <div class="piece-meta">Bruce Zhang · 铜管合奏（2 Tpt / 3 Hn / 2 Tbn）</div>
+    </div>
+    <p class="piece-desc reveal d1">七件铜管乐器的开场曲。以三连音为核心动力，各声部在齐奏和对位之间交替，在短篇幅内做出丰富的层次变化。</p>
+    <audio controls preload="metadata" class="reveal d1" data-volume="0.3"><source src="assets/music/ff.mp3" type="audio/mpeg"></audio>
+    <div class="piece-pair reveal d2">
+      <!-- FF/480b0c1f...jpg → assets/music/ff-photo.jpg -->
+      <img src="assets/music/ff-photo.jpg" alt="Fanfare 演出现场" class="pair-photo">
+      <!-- FF/0.jpg → assets/music/ff-score.jpg -->
+      <img src="assets/music/ff-score.jpg" alt="Fanfare 乐谱" class="pair-score" onclick="openScoreModal('ff')">
+    </div>
+  </div>
+</section>
+
+<!-- 5. String Quartet in F -->
+<section class="piece">
+  <div class="container">
+    <div class="piece-header reveal">
+      <span class="eyebrow">String Quartet</span>
+      <h2 class="piece-title">String Quartet in F</h2>
+      <div class="piece-meta">MUS 281 · Bruce Zhang · 弦乐四重奏（2 Vln / Vla / Vc）</div>
+    </div>
+    <p class="piece-desc reveal d1">我写过篇幅最长的室内乐作品。四个声部的关系构成叙事线——从齐奏到分裂，从对话到独白，再到最终的和解。</p>
+    <audio controls preload="metadata" class="reveal d1" data-volume="0.8"><source src="assets/music/sif.mp3" type="audio/mpeg"></audio>
+    <div class="piece-pair reveal d2">
+      <!-- SIF/05848e697ed...edited.jpg → assets/music/sif-photo.jpg -->
+      <img src="assets/music/sif-photo.jpg" alt="String Quartet 排练" class="pair-photo">
+      <!-- SIF/0.jpg → assets/music/sif-score.jpg -->
+      <img src="assets/music/sif-score.jpg" alt="String Quartet 乐谱" class="pair-score" onclick="openScoreModal('sif')">
+    </div>
+  </div>
+</section>
+
+<!-- 6. Through Silence — 弦乐四重奏 + 动画 -->
+<section class="piece">
+  <div class="container">
+    <div class="piece-header reveal">
+      <span class="eyebrow">String Quartet + Sync Animation</span>
+      <h2 class="piece-title">Through Silence</h2>
+      <div class="piece-meta">MUS 281 · Bruce Zhang · 弦乐四重奏 + 同步动画</div>
+    </div>
+    <p class="piece-desc reveal d1">同名弦乐四重奏与同步动画。四个视觉元素分别对应四种弦乐器——各自运动，偶尔交汇，像声部之间的对话。音乐和动画同步创作，彼此塑造。</p>
+    <audio controls preload="metadata" class="reveal d1" data-volume="1"><source src="assets/music/ts.mp3" type="audio/mpeg"></audio>
+    <div class="piece-pair reveal d2">
+      <!-- TS/image0.jpeg → assets/music/ts-photo.jpg -->
+      <img src="assets/music/ts-photo.jpg" alt="Through Silence 演出合影" class="pair-photo">
+      <!-- TS/0.jpg → assets/music/ts-score.jpg -->
+      <img src="assets/music/ts-score.jpg" alt="Through Silence 乐谱" class="pair-score" onclick="openScoreModal('ts')">
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <span class="eyebrow reveal">More</span>
+    <h2 class="reveal d1" style="font-size:clamp(26px,3.4vw,38px);font-weight:800;letter-spacing:-0.045em;margin-top:12px">查看其他作品</h2>
+    <p class="cta-note reveal d2">这些作品是我声音与多媒体背景的一部分。如果你对我的设计项目感兴趣：</p>
+    <div class="cta-actions reveal d2">
+      <a class="btn-main" href="ai-music-tool.html">AI 音乐共创工具</a>
+      <a class="btn-ghost" href="interval.html">Interval</a>
+      <a class="btn-ghost" href="index.html">返回首页</a>
+    </div>
+  </div>
+</section>
+
+<div class="container"><footer class="footer"><span>© 2026 张仕杰</span><span>Built with care.</span></footer></div>
+</main>
+
+<!-- Score Carousel Modal -->
+<div class="score-modal" id="scoreModal">
+  <button class="score-modal-close" onclick="closeCarousel()">&times;</button>
+  <div class="carousel">
+    <div class="carousel-track" id="carouselTrack"></div>
+    <button class="carousel-nav carousel-prev" onclick="carouselMove(-1)">‹</button>
+    <button class="carousel-nav carousel-next" onclick="carouselMove(1)">›</button>
+    <div class="carousel-counter" id="carouselCounter"></div>
+  </div>
+</div>
+
+<script>
+const scoreData = {
+  ms:  ['assets/music/scores/ms-0.jpg','assets/music/scores/ms-1.jpg','assets/music/scores/ms-2.jpg','assets/music/scores/ms-3.jpg','assets/music/scores/ms-4.jpg','assets/music/scores/ms-5.jpg'],
+  dd:  ['assets/music/scores/dd-1.png','assets/music/scores/dd-2.png','assets/music/scores/dd-3.png','assets/music/scores/dd-4.png','assets/music/scores/dd-5.png'],
+  riw: ['assets/music/scores/riw-0.jpg','assets/music/scores/riw-1.jpg','assets/music/scores/riw-2.jpg','assets/music/scores/riw-3.jpg','assets/music/scores/riw-4.jpg','assets/music/scores/riw-5.jpg'],
+  ff:  Array.from({length:18},(_, i) => `assets/music/scores/ff-${i}.jpg`),
+  sif: Array.from({length:10},(_, i) => `assets/music/scores/sif-${i}.jpg`),
+  ts:  ['assets/music/scores/ts-0.jpg','assets/music/scores/ts-1.jpg','assets/music/scores/ts-2.jpg']
+};
+
+let currentSlide = 0, slides = [];
+
+function openScoreModal(key) {
+  slides = scoreData[key] || [];
+  currentSlide = 0;
+  renderCarousel();
+  document.getElementById('scoreModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCarousel() {
+  document.getElementById('scoreModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function carouselMove(dir) {
+  currentSlide = Math.max(0, Math.min(slides.length - 1, currentSlide + dir));
+  updateSlidePositions();
+}
+
+function renderCarousel() {
+  const track = document.getElementById('carouselTrack');
+  const counter = document.getElementById('carouselCounter');
+  // Build DOM only once per open
+  if (track.children.length !== slides.length) {
+    track.innerHTML = '';
+    slides.forEach((src, i) => {
+      const el = document.createElement('div');
+      el.className = 'carousel-slide';
+      el.innerHTML = `<img src="${src}" alt="Score page ${i+1}">`;
+      el.addEventListener('click', () => { if (i !== currentSlide) { currentSlide = i; updateSlidePositions(); } });
+      track.appendChild(el);
+    });
+  }
+  updateSlidePositions();
+}
+
+function updateSlidePositions() {
+  const track = document.getElementById('carouselTrack');
+  const counter = document.getElementById('carouselCounter');
+  Array.from(track.children).forEach((el, i) => {
+    const diff = i - currentSlide;
+    const absDiff = Math.abs(diff);
+    if (absDiff > 3) {
+      el.style.opacity = '0';
+      el.style.pointerEvents = 'none';
+      el.style.transform = `translateX(${diff * 60}%) scale(0.7)`;
+      el.style.boxShadow = 'none';
+    } else {
+      el.style.transform = `translateX(${diff * 70}%) scale(${1 - absDiff * 0.15}) translateZ(${-absDiff * 80}px)`;
+      el.style.opacity = absDiff > 1 ? '0.35' : absDiff === 1 ? '0.65' : '1';
+      el.style.zIndex = 10 - absDiff;
+      el.style.pointerEvents = diff === 0 ? 'none' : 'auto';
+      el.style.cursor = diff === 0 ? 'default' : 'pointer';
+      // Center slide: inset edge darkening + outer spread shadow to eliminate deep lines at overlap
+      el.style.boxShadow = diff === 0
+        ? '0 20px 60px rgba(0,0,0,0.4), inset -12px 0 18px -6px rgba(0,0,0,0.12), inset 12px 0 18px -6px rgba(0,0,0,0.12)'
+        : '0 12px 36px rgba(0,0,0,0.15)';
+    }
+  });
+  counter.textContent = `${currentSlide + 1} / ${slides.length}`;
+}
+
+document.getElementById('scoreModal').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) closeCarousel();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeCarousel();
+  if (e.key === 'ArrowLeft') carouselMove(-1);
+  if (e.key === 'ArrowRight') carouselMove(1);
+});
+// Debounced wheel/trackpad: one page per gesture
+let mcWheelAccum = 0, mcWheelTimer = null;
+document.getElementById('scoreModal').addEventListener('wheel', e => {
+  e.preventDefault();
+  mcWheelAccum += e.deltaY || e.deltaX;
+  if (mcWheelTimer) return;
+  mcWheelTimer = setTimeout(() => {
+    if (Math.abs(mcWheelAccum) > 30) carouselMove(mcWheelAccum > 0 ? 1 : -1);
+    mcWheelAccum = 0; mcWheelTimer = null;
+  }, 120);
+}, { passive: false });
+
+function applyAudioVolumes() {
+  document.querySelectorAll('audio[data-volume]').forEach(player => {
+    const raw = Number(player.dataset.volume);
+    if (!Number.isFinite(raw)) return;
+    player.volume = Math.min(1, Math.max(0, raw));
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', applyAudioVolumes, { once: true });
+} else {
+  applyAudioVolumes();
+}
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

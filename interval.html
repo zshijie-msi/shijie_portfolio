@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Interval — 张仕杰</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f6f4ef;
+    --line: rgba(22, 24, 29, 0.08);
+    --line-strong: rgba(22, 24, 29, 0.14);
+    --text: #14161a;
+    --muted: #666b76;
+    --muted-2: #8c919d;
+    --accent: #d94452;
+    --accent-soft: rgba(217, 68, 82, 0.10);
+    --shadow-lg: 0 24px 80px rgba(20, 22, 26, 0.08);
+    --shadow-md: 0 12px 40px rgba(20, 22, 26, 0.06);
+    --radius-xl: 28px;
+    --radius-lg: 22px;
+    --radius-md: 16px;
+    --content: 1180px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Noto Sans SC',-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
+    background:radial-gradient(circle at 10% 10%,rgba(217,68,82,0.035),transparent 26%),radial-gradient(circle at 90% 50%,rgba(217,68,82,0.02),transparent 22%),var(--bg);
+    color:var(--text);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--accent);color:white}
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+  .container{max-width:var(--content);margin:0 auto;padding:0 40px}
+  .eyebrow{display:inline-block;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent)}
+
+  /* nav */
+  .nav-wrap{position:fixed;top:16px;left:0;right:0;z-index:120;pointer-events:none}
+  .nav{pointer-events:auto;max-width:calc(var(--content) + 80px);margin:0 auto;padding:0 24px;display:flex;justify-content:center}
+  .nav-shell{width:100%;max-width:940px;display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-radius:999px;background:rgba(248,247,244,0.75);backdrop-filter:blur(18px) saturate(170%);-webkit-backdrop-filter:blur(18px) saturate(170%);border:1px solid rgba(20,22,26,0.07);box-shadow:0 10px 40px rgba(20,22,26,0.05)}
+  .brand{font-size:15px;font-weight:800;letter-spacing:-0.03em}
+  .nav-links{display:flex;align-items:center;gap:10px}
+  .nav-links a:not(.resume-btn){font-size:13.5px;font-weight:600;color:#666b76;padding:8px 12px;border-radius:999px;transition:.2s ease}
+  .nav-links a:not(.resume-btn):hover{color:var(--text);background:rgba(20,22,26,0.05)}
+  .resume-btn{padding:11px 16px;border-radius:999px;background:var(--text);color:#fff;font-size:13px;font-weight:700;transition:transform .25s ease,background .25s ease}
+  .resume-btn:hover{transform:translateY(-1px);background:var(--accent)}
+
+  /* hero */
+  .hero{padding-top:120px;padding-bottom:80px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+  .hero-copy{}
+  .hero-title{font-size:clamp(48px,6vw,72px);line-height:1;font-weight:900;letter-spacing:-0.055em;margin:16px 0 0;font-style:italic}
+  .hero-lead{margin:28px 0 0;font-size:18px;line-height:1.82;color:var(--muted);max-width:480px;font-weight:500}
+  .hero-lead strong{color:var(--text);font-weight:700}
+  .hero-sub{margin:20px 0 0;font-size:15.5px;line-height:1.92;color:var(--muted-2);max-width:460px}
+  .hero-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+  .pill{display:inline-flex;align-items:center;padding:8px 14px;border-radius:999px;background:rgba(255,255,255,0.62);border:1px solid var(--line);color:var(--muted);font-size:12.5px;font-weight:600}
+  .hero-visual{position:relative;overflow:visible;margin-left:-150px}
+  .hero-visual img{width:108%;max-width:none;height:auto;display:block}
+
+  /* sections */
+  .case-section{padding:88px 0;border-top:1px solid var(--line)}
+  .section-head{margin-bottom:36px}
+  .section-title{font-size:clamp(26px,3.4vw,38px);line-height:1.1;font-weight:800;letter-spacing:-0.045em;margin-top:12px}
+  .prose{max-width:680px;font-size:15.5px;line-height:2;color:var(--muted)}
+  .prose strong{color:var(--text);font-weight:700}
+  .prose+.prose{margin-top:20px}
+  .pullquote{margin:28px 0;padding:22px 28px;border-left:3px solid var(--accent);background:rgba(255,255,255,0.48);border-radius:0 var(--radius-md) var(--radius-md) 0;font-size:16px;line-height:1.88;color:var(--text);font-weight:600;max-width:620px}
+
+  /* showcase medium */
+  .showcase-medium{max-width:820px;margin-top:36px;border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-lg);border:1px solid var(--line)}
+  .showcase-medium img{width:100%;display:block}
+  .showcase-medium .showcase-caption{padding:14px 24px;background:rgba(255,255,255,0.6);font-size:13px;color:var(--muted-2);line-height:1.72;border-top:1px solid var(--line)}
+
+  /* dark showcase for app screens */
+  .showcase-dark{margin-top:36px;border-radius:var(--radius-xl);overflow:hidden;background:#0f2332;box-shadow:var(--shadow-lg);border:1px solid rgba(255,255,255,0.06);padding:32px}
+  .showcase-dark img{width:100%;display:block;border-radius:16px}
+  .showcase-dark-caption{margin-top:14px;font-size:13px;color:rgba(255,255,255,0.4);line-height:1.72}
+
+  /* screen trio grid */
+  .screen-trio{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:36px}
+  .screen-trio-item{border-radius:var(--radius-lg);overflow:hidden;background:rgba(255,255,255,0.52);border:1px solid var(--line);box-shadow:var(--shadow-md);transition:transform .3s ease,box-shadow .3s ease}
+  .screen-trio-item:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(20,22,26,0.1)}
+  .screen-trio-item img{width:100%;height:auto;display:block}
+  .screen-trio-label{padding:10px 14px;font-size:12px;font-weight:700;color:var(--muted);text-align:center;background:rgba(255,255,255,0.6);border-top:1px solid var(--line)}
+
+  /* video showcase */
+  .video-showcase{margin-top:44px;border-radius:var(--radius-xl);overflow:hidden;background:#0f2332;box-shadow:var(--shadow-lg);border:1px solid rgba(255,255,255,0.06)}
+  .video-showcase video{width:100%;display:block}
+  .video-showcase-caption{padding:14px 24px;font-size:13px;color:rgba(255,255,255,0.4);line-height:1.72}
+
+  /* findings */
+  .findings-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:32px}
+  .finding-card{padding:24px;border-radius:var(--radius-lg);background:rgba(255,255,255,0.52);border:1px solid var(--line)}
+  .finding-label{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+  .finding-text{font-size:15px;line-height:1.82;color:var(--muted)}
+
+  /* process cards — horizontal */
+  .process-cards{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;gap:0;align-items:start;margin-top:32px}
+  .process-card{padding:20px;border-radius:var(--radius-lg);background:rgba(255,255,255,0.52);border:1px solid var(--line);transition:transform .3s ease,box-shadow .3s ease}
+  .process-card:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(20,22,26,0.08)}
+  .pc-icon{width:44px;height:44px;border-radius:12px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+  .pc-title{font-size:15px;font-weight:700;margin-bottom:6px}
+  .pc-desc{font-size:13px;line-height:1.78;color:var(--muted)}
+  .pc-arrow{display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--muted-2);padding:0 6px;margin-top:40px;font-family:'DM Sans',sans-serif}
+
+  /* cta */
+  .cta-section{padding:72px 0 88px;border-top:1px solid var(--line);text-align:center}
+  .cta-note{max-width:580px;margin:14px auto 28px;font-size:15px;line-height:1.88;color:var(--muted)}
+  .cta-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+  .btn-main{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 22px;border-radius:14px;font-size:14.5px;font-weight:700;background:var(--text);color:#fff;box-shadow:var(--shadow-md);transition:.25s cubic-bezier(.16,1,.3,1)}
+  .btn-main:hover{background:var(--accent);transform:translateY(-1px)}
+  .btn-ghost{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 22px;border-radius:14px;font-size:14.5px;font-weight:700;border:1px solid var(--line-strong);color:var(--text);background:rgba(255,255,255,0.56);transition:.25s cubic-bezier(.16,1,.3,1)}
+  .btn-ghost:hover{border-color:rgba(217,68,82,.25);color:var(--accent);transform:translateY(-1px)}
+  .footer{padding:28px 0 44px;color:var(--muted-2);font-size:12px;display:flex;justify-content:space-between;gap:18px;border-top:1px solid rgba(20,22,26,.06)}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+  .reveal.visible{opacity:1;transform:translateY(0)}
+  .d1{transition-delay:.06s}.d2{transition-delay:.12s}.d3{transition-delay:.18s}
+
+  @media(max-width:1040px){
+    .hero{grid-template-columns:1fr;gap:32px}
+    .hero-lead,.hero-sub{max-width:none}
+    .findings-grid{grid-template-columns:1fr}
+    .screen-trio{grid-template-columns:1fr}
+    .hero-visual{margin-left:0;overflow:hidden}
+    .hero-visual img{width:100%;left:0}
+    .process-cards{grid-template-columns:1fr;gap:12px}
+    .pc-arrow{transform:rotate(90deg);margin:0 auto;padding:4px 0}
+  }
+  @media(max-width:768px){
+    .container{padding:0 20px}
+    .hero{padding-top:100px;padding-bottom:56px}
+    .case-section{padding:64px 0}
+    .nav{padding:0 12px}
+    .nav-links a:not(.resume-btn){display:none}
+    .footer{flex-direction:column}
+  }
+</style>
+</head>
+<body>
+<div class="nav-wrap">
+  <nav class="nav">
+    <div class="nav-shell">
+      <a href="index.html" class="brand">张仕杰</a>
+      <div class="nav-links">
+        <a href="#overview">概览</a>
+        <a href="#design">设计</a>
+        <a href="index.html" class="resume-btn">返回首页</a>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<main>
+  <!-- Hero -->
+  <section class="container hero">
+    <div class="hero-copy">
+      <span class="eyebrow reveal">Sound-first Travel App · 2024</span>
+      <h1 class="hero-title reveal d1">Interval.</h1>
+      <p class="hero-lead reveal d2">
+        社交媒体上的旅行内容几乎全靠视觉——精修照片、滤镜、构图。但到了现场，很多人发现<strong>眼前的景色和手机里看到的完全不一样</strong>。这个项目想探索的是：如果换一种感官入口，声音能不能帮人建立更真实的空间感知？
+      </p>
+      <p class="hero-sub reveal d3">
+        Interval 是一个以声音为核心媒介的旅行探索 app。用户可以发现、录制和分享城市中的声音叙事，用听觉代替视觉去重新认识一个地方。
+      </p>
+      <div class="hero-pills reveal d3">
+        <span class="pill">UX Design</span>
+        <span class="pill">UI Design</span>
+        <span class="pill">Sound Design</span>
+        <span class="pill">个人项目</span>
+      </div>
+    </div>
+    <div class="hero-visual reveal d2">
+      <!-- 放置 1 1001292817.png → assets/interval/hero-mockup.png -->
+      <img src="assets/interval/hero-mockup.png" alt="Interval app 多屏界面预览">
+    </div>
+  </section>
+
+  <!-- Background -->
+  <section class="case-section" id="overview">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Background</span>
+        <h2 class="section-title">视觉欺骗与声音的可能性</h2>
+      </div>
+      <p class="prose reveal d1">
+        这个项目从一个观察出发：社交媒体上的旅行内容让人对目的地产生过高期待，到了现场后经常失望。我做了一轮问卷调查，结果显示多数用户认为社交媒体上的旅行图片"经常"与实际不符，对视觉内容的信任度普遍偏低。
+      </p>
+      <p class="prose reveal d2">
+        接着我查阅了声学研究文献——Blesser 和 Salter 的研究指出，声音具有全方位性，能够超越视觉的局限，与情绪建立更直接的连接；Schafer 的 Soundscape 理论则认为，通过倾听环境，人们可以重新发现被忽视的文化和自然叙事。
+      </p>
+      <div class="pullquote reveal d3">
+        如果社交媒体上的视觉内容已经不太值得信任，那声音能不能成为一种更贴近现场的感知方式？
+      </div>
+    </div>
+  </section>
+
+  <!-- Research -->
+  <section class="case-section">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Research</span>
+        <h2 class="section-title">实地调研与竞品分析</h2>
+      </div>
+      <p class="prose reveal d1">
+        我在几个争议较大的社交媒体"网红景点"做了实地调研，采访到场游客对视觉欺骗和声音感知的看法。多数受访者表示：照片经常让他们感到"被骗"，但声音——市场里的叫卖、街巷里的脚步声、河边的水流——反而让他们觉得更接近真实。
+      </p>
+      <p class="prose reveal d2">
+        竞品分析覆盖了 Spotify（以算法推荐见长但不做空间叙事）、喜马拉雅（内容丰富但偏单向输出）和携程（重预订轻体验）。Interval 要做的事情不在这三者的交集里——它不是播客平台，不是旅行社，而是一个让用户自己去发现和创造声音故事的工具。
+      </p>
+    </div>
+  </section>
+
+  <!-- Design Process -->
+  <section class="case-section" id="design">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Design Process</span>
+        <h2 class="section-title">从声音叙事到交互设计</h2>
+      </div>
+      <p class="prose reveal d1">
+        设计过程分两条线推进。一条是声音叙事的方法论——从选题构思、实地录制、后期编辑到重构叙事线，我把声音创作拆成了六个可操作的步骤，并把这个流程直接融进 app 的交互结构里。另一条是交互层面的：用户流程、低保真线框、设计系统定义、再到高保真原型。
+      </p>
+
+      <div class="process-cards">
+        <div class="process-card reveal">
+          <div class="pc-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+          <div class="pc-title">发现与探索</div>
+          <div class="pc-desc">浏览城市声音地图，发现其他创作者的声音叙事，以 2D 或 3D 空间视图查看声音密度和分布。</div>
+        </div>
+        <div class="pc-arrow reveal d1">→</div>
+        <div class="process-card reveal d1">
+          <div class="pc-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+          </div>
+          <div class="pc-title">录制与采集</div>
+          <div class="pc-desc">传统录音或 AR + AI 辅助录制，自动识别环境中的声源类型，帮助有针对性地采集素材。</div>
+        </div>
+        <div class="pc-arrow reveal d2">→</div>
+        <div class="process-card reveal d2">
+          <div class="pc-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><polygon points="14 2 18 6 7 17 3 17 3 13 14 2"/><line x1="3" y1="22" x2="21" y2="22"/></svg>
+          </div>
+          <div class="pc-title">编辑与重构</div>
+          <div class="pc-desc">降噪、增强、片段选择，然后按叙事线重新组织声音片段，形成一段完整的声音故事。</div>
+        </div>
+        <div class="pc-arrow reveal d3">→</div>
+        <div class="process-card reveal d3">
+          <div class="pc-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+          </div>
+          <div class="pc-title">发布与分享</div>
+          <div class="pc-desc">发布到社区，其他用户可以收听、评论、收藏，也可以去同一个地点录制自己的版本。</div>
+        </div>
+      </div>
+
+      <!-- 多屏平铺展示 — Group 1171275111.png → assets/interval/screens-overview.png -->
+      <div class="showcase-dark reveal" style="margin-top:44px">
+        <img src="assets/interval/screens-overview.png" alt="Interval 全部界面概览">
+        <div class="showcase-dark-caption">Interval 核心界面一览 — 涵盖发现、录制、编辑与发布的完整流程。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Design System -->
+  <section class="case-section">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Visual System</span>
+        <h2 class="section-title">设计语言</h2>
+      </div>
+      <p class="prose reveal d1">
+        Interval 的视觉系统围绕深色主调 + 珊瑚红强调色构建。深色背景强化沉浸感和"倾听"的氛围，珊瑚红用于交互元素和录制状态，让关键操作在暗色界面中一眼可见。字体选择了 Sansation（标题）和 Aeonik（正文），前者带有轻微的几何感，后者保持良好的小字号可读性。
+      </p>
+
+      <div class="findings-grid reveal d2">
+        <div class="finding-card">
+          <div class="finding-label">色彩</div>
+          <div class="finding-text">深色主调（#0F2332）营造倾听氛围，珊瑚红（#ED4550）标记录制和交互状态，浅灰和奶白用于辅助信息层。</div>
+        </div>
+        <div class="finding-card">
+          <div class="finding-label">组件</div>
+          <div class="finding-text">声音卡片、录制控制面板、3D 空间声音地图、创作者主页、声音波形可视化——所有组件都围绕"声音优先"的信息层级设计。</div>
+        </div>
+      </div>
+
+      <!-- 三张单屏截图 -->
+      <div class="screen-trio reveal">
+        <!-- Group 1171275102.png → assets/interval/screen-theme.png -->
+        <div class="screen-trio-item">
+          <img src="assets/interval/screen-theme.png" alt="主题选择界面">
+          <div class="screen-trio-label">主题选择</div>
+        </div>
+        <!-- Group 1171275103.png → assets/interval/screen-discover.png -->
+        <div class="screen-trio-item">
+          <img src="assets/interval/screen-discover.png" alt="城市声音探索界面">
+          <div class="screen-trio-label">声音探索</div>
+        </div>
+        <!-- Group 1171275104.png → assets/interval/screen-player.png -->
+        <div class="screen-trio-item">
+          <img src="assets/interval/screen-player.png" alt="声音播放器界面">
+          <div class="screen-trio-label">播放器</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Outcome -->
+  <section class="case-section">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Outcome</span>
+        <h2 class="section-title">最终设计与反思</h2>
+      </div>
+
+      <!-- 视频展示区 — interval_v1__1080p_.mp4 → assets/interval/interval-demo.mp4 -->
+      <div class="video-showcase reveal d1">
+        <video controls playsinline preload="metadata" poster="assets/interval/cover.png">
+          <source src="assets/interval/interval-demo.mp4" type="video/mp4">
+        </video>
+        <div class="video-showcase-caption">Interval 原型演示 — 从发现声音到完成一段城市声音叙事的完整流程。</div>
+      </div>
+
+      <p class="prose reveal d1" style="margin-top:36px">
+        最终原型涵盖了完整的用户流程：从声音发现页、创作者空间、录制引导、到声音编辑和社区发布。整个 app 不做任何视觉旅行推荐——它只负责声音层的体验，这是它和所有现有旅行产品最根本的区别。
+      </p>
+      <p class="prose reveal d2">
+        这个项目对我后续的工作方向产生了直接影响。它让我开始关注"非视觉感官如何参与数字产品设计"这个问题——后来做 AI 音乐共创工具时，很多关于"用户如何理解声音反馈""如何在界面上组织听觉信息"的设计直觉，都来自 Interval 阶段的积累。
+      </p>
+    </div>
+  </section>
+
+  <!-- My Role -->
+  <section class="case-section">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">My Role</span>
+        <h2 class="section-title">我做了什么</h2>
+      </div>
+      <p class="prose reveal d1">
+        这是一个个人项目。从前期问卷调研、实地录音采集、文献综述，到用户画像、交互流程设计、设计系统定义、低保真线框和高保真原型制作——全部由我独立完成。声音叙事方法论也是我自己整理的，后来被融入了 app 的创作引导流程中。
+      </p>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <span class="eyebrow reveal">More</span>
+      <h2 class="section-title reveal d1">查看其他项目</h2>
+      <p class="cta-note reveal d2">Interval 是我在声音与交互设计交叉领域的个人探索。如果你对我的其他方向感兴趣：</p>
+      <div class="cta-actions reveal d3">
+        <a class="btn-main" href="ai-music-tool.html">AI 音乐共创工具</a>
+        <a class="btn-ghost" href="paw4care.html">Paw 4 Care</a>
+        <a class="btn-ghost" href="index.html">返回首页</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <footer class="footer">
+      <span>© 2026 张仕杰</span>
+      <span>Built with care.</span>
+    </footer>
+  </div>
+</main>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

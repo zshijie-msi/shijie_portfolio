@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Canvas × Instructure — 张仕杰</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f6f4ef;--line:rgba(22,24,29,0.08);--line-strong:rgba(22,24,29,0.14);--text:#14161a;--muted:#666b76;--muted-2:#8c919d;--accent:#2d6a4f;--accent-soft:rgba(45,106,79,0.10);--shadow-lg:0 24px 80px rgba(20,22,26,0.08);--shadow-md:0 12px 40px rgba(20,22,26,0.06);--radius-xl:28px;--radius-lg:22px;--radius-md:16px;--content:1180px}
+  *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+  body{font-family:'Noto Sans SC',-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;background:radial-gradient(circle at 10% 10%,rgba(45,106,79,0.035),transparent 26%),radial-gradient(circle at 90% 50%,rgba(45,106,79,0.02),transparent 22%),var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  ::selection{background:var(--accent);color:white}a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
+  .container{max-width:var(--content);margin:0 auto;padding:0 40px}
+  .eyebrow{display:inline-block;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent)}
+
+  /* ── nav ── */
+  .nav-wrap{position:fixed;top:16px;left:0;right:0;z-index:120;pointer-events:none}
+  .nav{pointer-events:auto;max-width:calc(var(--content) + 80px);margin:0 auto;padding:0 24px;display:flex;justify-content:center}
+  .nav-shell{width:100%;max-width:940px;display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-radius:999px;background:rgba(248,247,244,0.75);backdrop-filter:blur(18px) saturate(170%);-webkit-backdrop-filter:blur(18px) saturate(170%);border:1px solid rgba(20,22,26,0.07);box-shadow:0 10px 40px rgba(20,22,26,0.05)}
+  .brand{font-size:15px;font-weight:800;letter-spacing:-0.03em}
+  .nav-links{display:flex;align-items:center;gap:10px}
+  .nav-links a:not(.resume-btn){font-size:13.5px;font-weight:600;color:#666b76;padding:8px 12px;border-radius:999px;transition:.2s ease}
+  .resume-btn{padding:11px 16px;border-radius:999px;background:var(--text);color:#fff;font-size:13px;font-weight:700;transition:transform .25s ease,background .25s ease}
+  .resume-btn:hover{transform:translateY(-1px);background:var(--accent)}
+
+  /* ── hero ── */
+  .hero{padding:120px 0 80px;max-width:780px}
+  .hero-title{font-size:clamp(40px,5vw,56px);line-height:1.08;font-weight:900;letter-spacing:-0.05em;margin:16px 0 0}
+  .hero-lead{margin:24px 0 0;font-size:18px;line-height:1.82;color:var(--muted);max-width:640px;font-weight:500}
+  .hero-lead strong{color:var(--text);font-weight:700}
+  .hero-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+  .pill{display:inline-flex;align-items:center;padding:8px 14px;border-radius:999px;background:rgba(255,255,255,0.62);border:1px solid var(--line);color:var(--muted);font-size:12.5px;font-weight:600}
+  .team-note{margin-top:16px;font-size:13px;color:var(--muted-2);line-height:1.6}
+
+  /* ── sections ── */
+  .case-section{padding:88px 0;border-top:1px solid var(--line)}
+  .section-head{margin-bottom:36px}
+  .section-title{font-size:clamp(26px,3.4vw,38px);line-height:1.1;font-weight:800;letter-spacing:-0.045em;margin-top:12px}
+  .prose{max-width:680px;font-size:15.5px;line-height:2;color:var(--muted)}
+  .prose strong{color:var(--text);font-weight:700}
+  .prose+.prose{margin-top:20px}
+  .pullquote{margin:28px 0;padding:22px 28px;border-left:3px solid var(--accent);background:rgba(255,255,255,0.48);border-radius:0 var(--radius-md) var(--radius-md) 0;font-size:16px;line-height:1.88;color:var(--text);font-weight:600;max-width:640px}
+
+  /* ── data pair — flex column for aligned captions ── */
+  .data-pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:36px;max-width:820px}
+  .data-card{border-radius:var(--radius-lg);overflow:hidden;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow-md);display:flex;flex-direction:column}
+  .data-card img{width:100%;display:block;flex-shrink:0}
+  .data-card .data-caption{padding:12px 18px;font-size:12.5px;color:var(--muted-2);line-height:1.6;border-top:1px solid var(--line);margin-top:auto}
+
+  /* ── process cards — interval style, with arrows ── */
+  .process-row{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:0;align-items:start}
+  .process-row+.process-row{margin-top:14px}
+  .process-card{padding:20px;border-radius:var(--radius-lg);background:rgba(255,255,255,0.52);border:1px solid var(--line);transition:transform .3s ease,box-shadow .3s ease}
+  .process-card:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(20,22,26,0.08)}
+  .pc-icon{width:44px;height:44px;border-radius:12px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+  .pc-icon svg{width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .pc-title{font-size:15px;font-weight:700;margin-bottom:6px}
+  .pc-desc{font-size:13px;line-height:1.78;color:var(--muted)}
+  .pc-arrow{display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--muted-2);padding:0 6px;margin-top:40px;font-family:'DM Sans',sans-serif}
+
+  /* ── affinity wall trio ── */
+  .aw-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:36px}
+  .aw-card{border-radius:var(--radius-lg);overflow:hidden;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow-md);display:flex;flex-direction:column}
+  .aw-card img{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:top center;display:block}
+  .aw-card-body{padding:14px 18px;border-top:1px solid var(--line);margin-top:auto}
+  .aw-card-step{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:800;color:var(--accent);letter-spacing:.1em;margin-bottom:4px}
+  .aw-card-label{font-size:13.5px;font-weight:700;margin-bottom:2px}
+  .aw-card-desc{font-size:12.5px;line-height:1.6;color:var(--muted-2)}
+
+  /* ── recommendation grid ── */
+  .rec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:36px}
+  .rec-card{border-radius:var(--radius-lg);overflow:hidden;background:rgba(255,255,255,0.56);border:1px solid var(--line);box-shadow:var(--shadow-md);display:flex;flex-direction:column}
+  .rec-card-img{width:100%;display:block}
+  .rec-card-body{padding:20px 22px 24px;flex:1;display:flex;flex-direction:column}
+  .rec-card-num{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:800;color:var(--accent);letter-spacing:.12em;margin-bottom:8px}
+  .rec-card-title{font-size:17px;font-weight:800;letter-spacing:-0.02em;margin-bottom:8px}
+  .rec-card-desc{font-size:13.5px;line-height:1.82;color:var(--muted);flex:1}
+  .rec-card-desc strong{color:var(--text);font-weight:700}
+
+  /* ── team photo ── */
+  .team-photo-wrap{max-width:520px;margin:32px 0 0;border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-md);border:1px solid var(--line)}
+  .team-photo-wrap img{width:100%;display:block}
+  .team-photo-wrap .tp-caption{padding:12px 20px;background:rgba(255,255,255,0.6);font-size:13px;color:var(--muted-2);line-height:1.6;border-top:1px solid var(--line)}
+
+  /* ── cta ── */
+  .cta-section{padding:72px 0 88px;border-top:1px solid var(--line);text-align:center}
+  .cta-note{max-width:580px;margin:14px auto 28px;font-size:15px;line-height:1.88;color:var(--muted)}
+  .cta-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+  .btn-main{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 22px;border-radius:14px;font-size:14.5px;font-weight:700;background:var(--text);color:#fff;box-shadow:var(--shadow-md);transition:.25s cubic-bezier(.16,1,.3,1)}
+  .btn-main:hover{background:var(--accent);transform:translateY(-1px)}
+  .btn-ghost{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 22px;border-radius:14px;font-size:14.5px;font-weight:700;border:1px solid var(--line-strong);color:var(--text);background:rgba(255,255,255,0.56);transition:.25s cubic-bezier(.16,1,.3,1)}
+  .btn-ghost:hover{border-color:rgba(45,106,79,.25);color:var(--accent);transform:translateY(-1px)}
+  .footer{padding:28px 0 44px;color:var(--muted-2);font-size:12px;display:flex;justify-content:space-between;gap:18px;border-top:1px solid rgba(20,22,26,.06)}
+
+  /* ── reveal ── */
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+  .reveal.visible{opacity:1;transform:translateY(0)}.d1{transition-delay:.06s}.d2{transition-delay:.12s}.d3{transition-delay:.18s}.d4{transition-delay:.24s}
+
+  @media(max-width:1040px){
+    .rec-grid,.aw-strip{grid-template-columns:1fr}
+    .data-pair{grid-template-columns:1fr}
+    .process-row{grid-template-columns:1fr;gap:12px}
+    .pc-arrow{transform:rotate(90deg);margin:0 auto;padding:4px 0}
+  }
+  @media(max-width:768px){
+    .container{padding:0 20px}
+    .case-section{padding:64px 0}
+    .nav-links a:not(.resume-btn){display:none}
+    .team-photo-wrap{max-width:100%}
+    .footer{flex-direction:column}
+  }
+</style>
+</head>
+<body>
+<div class="nav-wrap"><nav class="nav"><div class="nav-shell">
+  <a href="index.html" class="brand">张仕杰</a>
+  <div class="nav-links"><a href="#overview">概览</a><a href="#research">研究</a><a href="#recommendations">建议</a><a href="index.html" class="resume-btn">返回首页</a></div>
+</div></nav></div>
+
+<main>
+  <section class="container hero">
+    <span class="eyebrow reveal">Contextual Inquiry · SI 500 · 2025</span>
+    <h1 class="hero-title reveal d1">Canvas × Instructure</h1>
+    <p class="hero-lead reveal d2">
+      大学入学率在下降，但原因不只是学费。我们和 Instructure（Canvas LMS 的开发商）合作，通过用户研究发现了一个被忽视的根本原因：<strong>学生对传统课堂内容本身失去了兴趣</strong>——然后基于这个洞察，为 Canvas 提出了三个产品方向建议。
+    </p>
+    <div class="hero-pills reveal d3">
+      <span class="pill">用户研究</span>
+      <span class="pill">Contextual Inquiry</span>
+      <span class="pill">信息架构</span>
+      <span class="pill">产品建议</span>
+    </div>
+    <p class="team-note reveal d3">团队项目 · 与 Julie Zhou、Bill Long、Yuna Lee、Mufaddal Miyajiwala 协作完成</p>
+    <div style="margin-top:36px;border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-lg);border:1px solid var(--line)" class="reveal d3">
+      <img src="assets/canvas/instructure-banner.jpg" alt="Instructure — Setting Potential in Motion" style="width:100%;display:block">
+    </div>
+  </section>
+
+  <!-- ── Context ── -->
+  <section class="case-section" id="overview">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Context</span>
+        <h2 class="section-title">问题背景</h2>
+      </div>
+      <p class="prose reveal d1">
+        Instructure 是 Canvas LMS 的开发商。Canvas 在北美高校 LMS 市场占有率超过 30%，覆盖全球数千所院校——它是绝大多数美国大学生日常使用的学习平台。SI 500 课程与 Instructure 合作，让学生团队对教育领域的真实问题做实地调研。我们团队的出发点是：<strong>美国大学入学率持续下降，背后的原因是什么？Canvas 可以做些什么？</strong>
+      </p>
+      <p class="prose reveal d2">
+        最初的假设是经济原因——学费在过去 15 年涨了 37%，59% 的毕业生背负学生贷款。但这只是故事的一半。
+      </p>
+      <div class="data-pair reveal d3">
+        <div class="data-card">
+          <img src="assets/canvas/tuition-chart.webp" alt="Annual Cost of College Attendance">
+          <div class="data-caption">四年制大学年均费用持续攀升，公立院校从 2012 年的 $21k 涨至 2023 年的 $27k。</div>
+        </div>
+        <div class="data-card">
+          <img src="assets/canvas/loan-growth-chart.png" alt="Student Loan Debt Annual Growth">
+          <div class="data-caption">私人贷款增速在 2024 年达到 10.1%，远超联邦贷款，经济负担结构正在转变。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Research ── -->
+  <section class="case-section" id="research">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Research</span>
+        <h2 class="section-title">研究过程</h2>
+      </div>
+      <p class="prose reveal d1">
+        我们的研究分为两个阶段。先通过桌面调研建立量化基线——入学率趋势、学费涨幅、学生贷款数据。然后转向定性研究：访谈了四位选择了非传统路径的年轻人和一位高中升学顾问，还前往安娜堡当地的社区大学做了实地考察，观察实际的教学环境和学生状态。整个过程中与 Instructure 的 Chief Academic Officer 保持同步，确保研究方向和他们的产品战略对齐。
+      </p>
+      <p class="prose reveal d2">
+        访谈中反复出现的不是"我付不起学费"，而是<strong>"课太无聊了"、"我不喜欢上学"、"我想要动手实践"</strong>。一位受访者高中毕业后上了一年社区大学就去做了调酒师——不是因为经济原因，而是工作比学校有趣得多。升学顾问也指出，学生缺乏兴趣正在成为比经济压力更强的决定因素。
+      </p>
+      <div class="pullquote reveal d3">
+        经济障碍是现实的，但"不感兴趣"才是更深层的原因——很多学生不是上不起大学，而是看不到上大学的意义。
+      </div>
+
+      <!-- Process cards — row 1 -->
+      <div class="process-row reveal d4" style="margin-top:36px">
+        <div class="process-card">
+          <div class="pc-icon"><svg viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M8 7h6"/><path d="M8 11h8"/></svg></div>
+          <div class="pc-title">桌面调研</div>
+          <div class="pc-desc">入学率、学费、贷款等量化数据，建立问题基线。</div>
+        </div>
+        <div class="pc-arrow">→</div>
+        <div class="process-card">
+          <div class="pc-icon"><svg viewBox="0 0 24 24"><path d="M17 18a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2"/><circle cx="12" cy="11" r="3"/><rect x="3" y="4" width="18" height="16" rx="2"/></svg></div>
+          <div class="pc-title">半结构化访谈</div>
+          <div class="pc-desc">4 位年轻人 + 1 位升学顾问，深入了解决策动机。</div>
+        </div>
+        <div class="pc-arrow">→</div>
+        <div class="process-card">
+          <div class="pc-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+          <div class="pc-title">实地考察</div>
+          <div class="pc-desc">前往安娜堡社区大学，观察教学环境与学生状态。</div>
+        </div>
+      </div>
+      <!-- Process cards — row 2 -->
+      <div class="process-row reveal d4">
+        <div class="process-card">
+          <div class="pc-icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div class="pc-title">Client 跟进</div>
+          <div class="pc-desc">与 Instructure CAO 沟通，确认产品战略方向。</div>
+        </div>
+        <div class="pc-arrow">→</div>
+        <div class="process-card">
+          <div class="pc-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+          <div class="pc-title">Affinity Wall</div>
+          <div class="pc-desc">四层归纳法，从原始引述到根本原因逐步提炼。</div>
+        </div>
+        <div class="pc-arrow">→</div>
+        <div class="process-card">
+          <div class="pc-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+          <div class="pc-title">设计建议</div>
+          <div class="pc-desc">Pugh Matrix 评估方案可行性，输出三个产品方向。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Analysis ── -->
+  <section class="case-section">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Analysis</span>
+        <h2 class="section-title">数据分析与关键转向</h2>
+      </div>
+      <p class="prose reveal d1">
+        我们用归纳法构建了四层 Affinity Wall：原始引述 → 主题聚类 → Meta Clusters → Meta-Meta Clusters。整理出五个根本原因，最核心的两个是：传统教育无法激发真正的兴趣，导致学生缺乏继续深造的动力；以及高中阶段提供的学业指导缺乏个性化和实践性。
+      </p>
+      <p class="prose reveal d2">
+        这让我们做了一个关键转向：从"如何让学生付得起学费"变成了<strong>"如何让学习本身变得更有吸引力"</strong>——而这正好是 Canvas 作为学习平台可以直接影响的。
+      </p>
+
+      <div class="aw-strip reveal d3">
+        <div class="aw-card">
+          <img src="assets/canvas/affinity-wall.png" alt="Level 1 Yellow Affinity Notes">
+          <div class="aw-card-body">
+            <div class="aw-card-step">STEP 1</div>
+            <div class="aw-card-label">原始引述聚类</div>
+            <div class="aw-card-desc">100+ 条访谈引述按相似性初步分组，形成黄色便签矩阵，再进初步分类形成蓝色便签。</div>
+          </div>
+        </div>
+        <div class="aw-card">
+          <img src="assets/canvas/meta-clusters.png" alt="Meta Clusters">
+          <div class="aw-card-body">
+            <div class="aw-card-step">STEP 2</div>
+            <div class="aw-card-label">Meta Clusters</div>
+            <div class="aw-card-desc">蓝色便签提炼主题，粉色便签标记跨组联系，形成中层洞察。</div>
+          </div>
+        </div>
+        <div class="aw-card">
+          <img src="assets/canvas/meta-meta-clusters.png" alt="Meta-Meta Clusters">
+          <div class="aw-card-body">
+            <div class="aw-card-step">STEP 3</div>
+            <div class="aw-card-label">Meta-Meta Clusters</div>
+            <div class="aw-card-desc">绿色便签归纳五个根本原因，包含社会、家庭、教育等因素，其中"兴趣缺失"成为核心发现。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Recommendations ── -->
+  <section class="case-section" id="recommendations">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Recommendations</span>
+        <h2 class="section-title">给 Canvas 的三个方向建议</h2>
+      </div>
+      <p class="prose reveal d1">
+        基于研究发现，我们向 Instructure 提出了三个产品方向——都围绕同一个目标：让 Canvas 从一个"机构管理系统"变成一个"学生愿意打开的学习空间"。
+      </p>
+      <div class="rec-grid reveal d2">
+        <div class="rec-card">
+          <img class="rec-card-img" src="assets/canvas/rec-1-dashboard.png" alt="Personalized Dashboard">
+          <div class="rec-card-body">
+            <div class="rec-card-num">01</div>
+            <div class="rec-card-title">个性化仪表盘</div>
+            <div class="rec-card-desc">通过<strong>有限但有意义的自定义</strong>——主题、头像、布局编辑——加上轻量小组件，把 Canvas 从机构工具变成个人学习空间。</div>
+          </div>
+        </div>
+        <div class="rec-card">
+          <img class="rec-card-img" src="assets/canvas/rec-2-progress.png" alt="Progress & Career Map">
+          <div class="rec-card-body">
+            <div class="rec-card-num">02</div>
+            <div class="rec-card-title">技能路径地图</div>
+            <div class="rec-card-desc">把课程进度和<strong>具体技能、职业方向</strong>关联起来，用 GPA 预测器和 AI 职业建议让学生看到"我为什么要学这个"。</div>
+          </div>
+        </div>
+        <div class="rec-card">
+          <img class="rec-card-img" src="assets/canvas/rec-3-explorer.png" alt="Interest & Career Explorer">
+          <div class="rec-card-body">
+            <div class="rec-card-num">03</div>
+            <div class="rec-card-title">兴趣探索微模块</div>
+            <div class="rec-card-desc">10–20 分钟的互动小挑战，用<strong>"试试看你喜不喜欢"</strong>代替"你想成为什么"——场景化探索比直接提问更有效。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Reflection ── -->
+  <section class="case-section">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Outcome</span>
+        <h2 class="section-title">反思</h2>
+      </div>
+      <p class="prose reveal d1">
+        这个项目最大的收获是学到了"转向"的能力。最初的假设（经济障碍）在数据面前被推翻了，团队需要快速调整方向。这种从数据出发、让证据引导设计决策的思维方式，后来在我做交互设计和用户测试时被反复用到。
+      </p>
+      <p class="prose reveal d2">
+        另一个收获是学会了在真实商业语境中做研究——Instructure 不是一个抽象的甲方，他们有具体的产品、具体的用户、具体的商业约束。在这个框架下做研究和在课堂上做研究，要求的精确度完全不同。
+      </p>
+      <div class="team-photo-wrap reveal d3">
+        <img src="assets/canvas/team-photo.jpg" alt="SI 500 Team 3">
+        <div class="tp-caption">团队数据分析会议时的合影</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── My Role ── -->
+  <section class="case-section">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">My Role</span>
+        <h2 class="section-title">我做了什么</h2>
+      </div>
+      <p class="prose reveal d1">
+        五人团队项目，所有工作协作完成。我重点参与了访谈协议设计与执行（包括与 Instructure Chief Academic Officer 的一对一访谈）、Affinity Wall 的归纳分析（尤其是从 Meta Clusters 到根本原因的提炼过程）、以及最终建议的信息架构和呈现。
+      </p>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="container">
+      <span class="eyebrow reveal">More</span>
+      <h2 class="section-title reveal d1">查看其他项目</h2>
+      <p class="cta-note reveal d2">这是一个以用户研究为核心的项目。如果你对我的其他方向感兴趣：</p>
+      <div class="cta-actions reveal d3">
+        <a class="btn-main" href="ai-music-tool.html">AI 音乐共创工具</a>
+        <a class="btn-ghost" href="sound-diary.html">Sound Diary</a>
+        <a class="btn-ghost" href="index.html">返回首页</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><footer class="footer"><span>© 2026 张仕杰</span><span>Built with care.</span></footer></div>
+</main>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
