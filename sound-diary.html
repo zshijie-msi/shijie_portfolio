@@ -408,13 +408,14 @@
     }
   };
 
-  let gSlides = [], gCurrent = 0;
+  let gSlides = [], gCurrent = 0, gActiveType = '';
 
   function openGallery(type) {
     const data = galleryData[type];
     clearProtoHover();
     gSlides = data.items;
     gCurrent = 0;
+    gActiveType = type;
     document.getElementById('galleryHeader').textContent = data.title;
     renderGallery();
     document.getElementById('galleryOverlay').classList.add('active');
@@ -434,9 +435,10 @@
 
   function renderGallery() {
     const track = document.getElementById('galleryTrack');
-    // Build DOM only once
-    if (track.children.length !== gSlides.length) {
+    // Rebuild when switching gallery type (lofi/hifi) or slide count changes.
+    if (track.dataset.galleryType !== gActiveType || track.children.length !== gSlides.length) {
       track.innerHTML = '';
+      track.dataset.galleryType = gActiveType;
       gSlides.forEach((item, i) => {
         const el = document.createElement('div');
         el.className = 'g-slide';
